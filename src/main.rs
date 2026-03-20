@@ -7,10 +7,10 @@ use walkdir::WalkDir;
 use dialoguer::Select;
 fn main() {
     //TODO instead of find_file_by_name use Path/PathBuff
-    let paths = find_file_by_name("./", "java.rs");
+    let paths = find_file_by_name("./", "main.java");
     if !paths.is_empty() {
         for path in paths {
-            let path_without_suffix = path.strip_suffix("java.rs").unwrap();
+            let path_without_suffix = path.strip_suffix("main.java").unwrap();
             create_folders(path_without_suffix).expect("Failed to create folders");
 
             write_into_yml_file();
@@ -34,9 +34,9 @@ fn write_into_yml_file() {
 
     let url: String;
     if chosen_db == "PG" {
-        url = "jdbc:postgresql://localhost:5432/{DB_NAME}".to_string();
+        url = "jdbc:postgresql://localhost:5432/${DB_NAME}".to_string();
     } else {
-        url = "jdbc:mysql://localhost:3306/{DB_NAME}".to_string();
+        url = "jdbc:mysql://localhost:3306/${DB_NAME}".to_string();
     }
 
     let yml_content = format!("spring:\n\
