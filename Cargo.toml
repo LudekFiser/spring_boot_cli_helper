@@ -1,5 +1,5 @@
 [package]
-name = "spring-boot-cli-helper"
+name = "spring-helper"
 version = "0.1.0"
 edition = "2024"
 
