@@ -7,7 +7,7 @@ use walkdir::WalkDir;
 use dialoguer::Select;
 fn main() {
     //TODO instead of find_file_by_name use Path/PathBuff
-    let paths = find_file_by_name("./", "main.java");
+    let paths = find_file_by_name("./", "Application.java");
     if !paths.is_empty() {
         for path in paths {
             let path_without_suffix = path.strip_suffix("main.java").unwrap();
@@ -70,7 +70,7 @@ fn find_file_by_name(root: &str, filename: &str) -> Vec<String> {
     WalkDir::new(root)
         .into_iter()
         .filter_map(|entry| entry.ok())
-        .filter(|entry| entry.file_name().to_string_lossy() == filename)
+        .filter(|entry| entry.file_name().to_string_lossy().ends_with(filename))
         .map(|entry| entry.path().to_string_lossy().into_owned())
         .collect()
 }
