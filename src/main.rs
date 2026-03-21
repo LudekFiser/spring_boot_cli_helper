@@ -59,40 +59,40 @@ fn generate_yml(chosen_db: &str) -> Result<String, Box<dyn Error>> {
     if chosen_db == "PG" {
         let url = "jdbc:postgresql://localhost:5432/${DB_NAME}".to_string();
         Ok(format!(
-            "spring:
-              datasource:
-                url: {url}
-                username: postgres
-                password: password
-                driver-class-name: org.postgresql.Driver
+"spring:
+  datasource:
+    url: {url}
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
 
-              jpa:
-                hibernate:
-                  ddl-auto: update
-                show-sql: true
-                properties:
-                  hibernate:
-                    format_sql: true
-            "
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+"
         ))
     } else if chosen_db == "MSQL" {
         let url = "jdbc:mysql://localhost:3306/${DB_NAME}".to_string();
         Ok(format!(
-            "spring:
-              datasource:
-                url: {url}
-                username: root
-                password: password
-                driver-class-name: com.mysql.cj.jdbc.Driver
+"spring:
+  datasource:
+    url: {url}
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-              jpa:
-                hibernate:
-                  ddl-auto: update
-                show-sql: true
-                properties:
-                  hibernate:
-                    format_sql: true
-            "
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+"
         ))
     } else {
         Err(Box::from("Unsupported database type"))
