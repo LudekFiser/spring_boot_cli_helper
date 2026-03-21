@@ -114,3 +114,17 @@ This will automatically build the tool and install it globally on your system so
 `spring-helper`
 
 The tool will start and guide you through the setup process.
+
+### Interactive menu
+
+![CLI preview](./readme_images/img.png)
+
+Use:
+- (UP, DOWN) arrows to navigate
+- SPACE to select/deselect options
+- ENTER to confirm your selection
+
+You can:
+- select one option
+- select multiple options
+- or select nothing (the program will exit)
