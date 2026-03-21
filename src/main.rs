@@ -13,7 +13,7 @@ fn main() {
             let path_without_suffix = path.parent().unwrap();
             create_folders(path_without_suffix).expect("Failed to create folders");
 
-            write_into_yml_file();
+            write_into_yml_file().expect("Failed to write to file");
         }
     }
 }
