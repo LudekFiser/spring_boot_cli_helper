@@ -3,20 +3,20 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
-pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Vec<PathBuf> {
+pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Result<Vec<PathBuf>, Box<dyn Error>>/*Vec<PathBuf>*/ {
     if filename.is_empty() {
-        panic!("File name is empty");
+        Err("File name is empty.".into())
     } else {
-        WalkDir::new(root)
+        Ok(WalkDir::new(root)
             .into_iter()
             .filter_map(|entry| entry.ok())
             .filter(|entry| entry.file_name().to_string_lossy().ends_with(filename))
             .map(|entry| entry.path().to_owned())
-            .collect()
+            .collect())
     }
 }
 
-pub(crate) fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
+pub(crate) fn create_folders(root: &Path) -> Result<(), Box<dyn Error>> {
     let folders_to_create = vec![
         "config", "controller", "repository", "entity",
         "mapper", "service", "exception", "service/impl"];
@@ -31,5 +31,5 @@ pub(crate) fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
         }
     }
 
-    Ok("Folders Successfully created!")
+    Ok(())
 }
