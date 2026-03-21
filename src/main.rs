@@ -2,34 +2,38 @@ use std::error::Error;
 use std::fs;
 use std::fs::{File};
 use std::io::{Write};
-use std::path::Path;
-use walkdir::WalkDir;
+use std::path::{Path, PathBuf};
+use walkdir::{DirEntry, WalkDir};
 use dialoguer::Select;
 fn main() {
     //TODO instead of find_file_by_name use Path/PathBuff
     let paths = find_file_by_name("./", "Application.java");
     if !paths.is_empty() {
         for path in paths {
-            let path_without_suffix = path.strip_suffix("main.java").unwrap();
+            //let path_without_suffix = path.strip_suffix("main.java").unwrap();
+            let path_without_suffix = path.parent().unwrap();
             create_folders(path_without_suffix).expect("Failed to create folders");
 
             write_into_yml_file();
 
 
-            println!("{}", path_without_suffix);
         }
     }
 }
 
-fn get_yml_file() -> File {
+fn get_yml_file() -> Result<File, Box<dyn Error>> {
     //TODO instead of find_file_by_name use Path/PathBuff
     let db_properties_file_path = find_file_by_name("./", "application.yml");
-    let stringed = db_properties_file_path.join("");
-    File::create(&stringed).expect(&format!("Failed to open file: {:?}", stringed))
+    if !db_properties_file_path.is_empty() {
+        let stringed = &db_properties_file_path[0];
+        Ok(File::create(&stringed).expect(&format!("Failed to open file: {:?}", stringed)))
+    } else {
+        Err(Box::from("Failed to find application.yml"))
+    }
 }
 
 fn write_into_yml_file() {
-    let mut file = get_yml_file();
+    let mut file = get_yml_file().unwrap();
     let chosen_db = ask_user_for_db();
 
     let url: String;
@@ -66,21 +70,26 @@ fn ask_user_for_db()  -> &'static str {
 
 
 // find main.java to get the path
-fn find_file_by_name(root: &str, filename: &str) -> Vec<String> {
-    WalkDir::new(root)
-        .into_iter()
-        .filter_map(|entry| entry.ok())
-        .filter(|entry| entry.file_name().to_string_lossy().ends_with(filename))
-        .map(|entry| entry.path().to_string_lossy().into_owned())
-        .collect()
+fn find_file_by_name(root: &str, filename: &str) -> /*Vec<String>*/ Vec<PathBuf> {
+    if filename.is_empty() {
+        panic!("File name is empty");
+    } else {
+        WalkDir::new(root)
+            .into_iter()
+            .filter_map(|entry| entry.ok())
+            .filter(|entry| entry.file_name().to_string_lossy().ends_with(filename))
+            //.map(|entry| entry.path().to_string_lossy().into_owned())
+            .map(|entry| entry.path().to_owned())
+            .collect()
+    }
 }
 
 // create folders
-fn create_folders(root: &str) -> Result<&str, Box<dyn Error>> {
+fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
     let folders_to_create = vec![
         "config", "controller", "repository", "entity",
         "mapper", "service", "exception", "service/impl"];
-    if root.is_empty() {
+    if !root.exists() {
         return Err(Box::from("Path is empty!"));
     }
 
