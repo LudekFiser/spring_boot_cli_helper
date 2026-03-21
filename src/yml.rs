@@ -9,7 +9,7 @@ use crate::db;
 use crate::db::DbChoice;
 
 fn get_yml_file() -> Result<File, Box<dyn Error>> {
-    //TODO instead of find_file_by_name use Path/PathBuff
+    //TODO instead of find_file_by_name use Path/PathBuff maybe, but works for now
     let yml_file = file_utils::find_file_by_name("./", "application.yml");
     let file = yml_file?;
     if !file.is_empty() {

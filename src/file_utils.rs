@@ -3,7 +3,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
-pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Result<Vec<PathBuf>, Box<dyn Error>>/*Vec<PathBuf>*/ {
+pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     if filename.is_empty() {
         Err("File name is empty.".into())
     } else {

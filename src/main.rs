@@ -9,7 +9,6 @@ fn main() {
     setup().expect("Failed to setup project");
 }
 
-
 fn setup() -> Result<(), Box<dyn Error>> {
     let paths = file_utils::find_file_by_name("./", "Application.java")?;
     for path in paths {

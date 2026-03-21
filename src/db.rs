@@ -6,10 +6,9 @@ pub(crate) enum DbChoice {
     Mysql,
 }
 
-pub(crate) fn ask_user_for_db() -> /*DbChoice*/ Result<DbChoice, Box<dyn Error>> {
+pub(crate) fn ask_user_for_db() -> Result<DbChoice, Box<dyn Error>> {
     let items = vec!["[1] - PostgreSQL (Default)", "[2] - MySQL"];
-
-
+    
     let selection = Select::new()
         .with_prompt("Choose a Database")
         .items(&items)
