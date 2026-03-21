@@ -5,8 +5,8 @@ use std::io::Write;
 use std::ops::Deref;
 use std::path::PathBuf;
 use crate::file_utils;
-use crate::db;
-use crate::db::DbChoice;
+use crate::ask_user;
+use crate::ask_user::DbChoice;
 
 fn get_yml_file() -> Result<File, Box<dyn Error>> {
     //TODO instead of find_file_by_name use Path/PathBuff maybe, but works for now
@@ -28,7 +28,7 @@ fn get_yml_file() -> Result<File, Box<dyn Error>> {
 
 pub(crate) fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
     let mut file = get_yml_file()?;
-    let chosen_db = db::ask_user_for_db();
+    let chosen_db = ask_user::ask_user_for_db();
 
     let yml = generate_yml(chosen_db?);
     file.write_all(yml.as_bytes())?;
