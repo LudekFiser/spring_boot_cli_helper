@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
-
+// TODO add another function validating the filename, so that we find the right one for each case, idk
 pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     if filename.is_empty() {
         Err("File name is empty.".into())
@@ -16,20 +16,26 @@ pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Result<Vec<PathBu
     }
 }
 
-pub(crate) fn create_folders(root: &Path) -> Result<(), Box<dyn Error>> {
-    let folders_to_create = vec![
-        "config", "controller", "repository", "entity",
-        "mapper", "service", "exception", "service/impl"];
-    if !root.exists() {
+pub(crate) fn create_folders(path: &Path, choice: PathChoice) -> Result<(), Box<dyn Error>> {
+    if !path.exists() {
         return Err(Box::from("Path is empty!"));
     }
-
-    for folder in folders_to_create {
-        let name = Path::new(root).join(folder);
+    let chosen_folder = match choice {
+        PathChoice::Main => vec![
+            "config", "controller", "repository", "entity",
+            "mapper", "service", "exception", "service/impl"],
+        PathChoice::Resources => vec!["db", "db/migration"],
+    };
+    for folder in chosen_folder {
+        let name = path.join(folder);
         if !name.exists() {
             fs::create_dir(name)?;
         }
     }
-
     Ok(())
+}
+
+pub(crate) enum PathChoice {
+    Main,
+    Resources
 }
