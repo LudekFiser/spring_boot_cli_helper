@@ -14,9 +14,11 @@ fn main() {
             create_folders(path_without_suffix).expect("Failed to create folders");
 
             write_into_yml_file().expect("Failed to write to file");
+            write_into_env_file().expect("Failed to write to env file");
         }
     }
 }
+
 
 fn get_yml_file() -> Result<File, Box<dyn Error>> {
     //TODO instead of find_file_by_name use Path/PathBuff
@@ -34,6 +36,14 @@ fn get_yml_file() -> Result<File, Box<dyn Error>> {
         }
     }
 }
+fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
+    let mut file = get_yml_file()?;
+    let chosen_db = ask_user_for_db();
+
+    let yml = generate_yml(chosen_db);
+    file.write_all(yml.as_bytes())?;
+    Ok(())
+}
 
 fn rename_file_if_properties(properties: PathBuf) -> Result<File, Box<dyn Error>> {
     if properties.exists() {
@@ -43,15 +53,6 @@ fn rename_file_if_properties(properties: PathBuf) -> Result<File, Box<dyn Error>
     } else {
         Err(Box::from("Failed to find application.yml"))
     }
-}
-
-fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
-    let mut file = get_yml_file()?;
-    let chosen_db = ask_user_for_db();
-
-    let yml = generate_yml(chosen_db);
-    file.write_all(yml.as_bytes())?;
-    Ok(())
 }
 
 fn generate_yml(chosen_db: DbChoice) -> String {
@@ -143,3 +144,14 @@ fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
     Ok("Folders Successfully created!")
 }
 
+fn create_env_file() -> Result<File, Box<dyn Error>> {
+    let file = File::create(".env")?;
+    Ok(file)
+}
+
+fn write_into_env_file() -> Result<(), Box<dyn Error>> {
+    let file = create_env_file();
+    let text = "DB_NAME=\nDB_USERNAME=\nDB_PASSWORD=";
+    file?.write_all(text.as_bytes())?;
+    Ok(())
+}
