@@ -8,7 +8,7 @@ pub(crate) fn setup() -> Result<(), Box<dyn Error>> {
     let mut choices: Vec<Choices> = Vec::new();
     let items = vec![
         "[1] - Create Main Folders",
-        "[2] - Create Flyway Folders",
+        "[2] - Create Flyway Migration Folders",
         "[3] - Setup .yml file",
         "[4] - Create .env file"];
 
