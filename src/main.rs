@@ -23,10 +23,26 @@ fn main() {
 
 fn get_yml_file() -> Result<File, Box<dyn Error>> {
     //TODO instead of find_file_by_name use Path/PathBuff
-    let db_properties_file_path = find_file_by_name("./", "application.yml");
-    if !db_properties_file_path.is_empty() {
-        let stringed = &db_properties_file_path[0];
+    let yml_file = find_file_by_name("./", "application.yml");
+    if !yml_file.is_empty() {
+        let stringed = &yml_file[0];
         Ok(File::create(&stringed).expect(&format!("Failed to open file: {:?}", stringed)))
+    } else {
+        let properties_file = find_file_by_name("./", "application.properties");
+        if !properties_file.is_empty() {
+            let stringed = properties_file[0].clone();
+            rename_file_if_properties(stringed)
+        } else {
+            Err("Failed to find file to write to".into())
+        }
+    }
+}
+
+fn rename_file_if_properties(properties: PathBuf) -> Result<File, Box<dyn Error>> {
+    if properties.exists() {
+        let new_path = properties.with_file_name("application.yml");
+        fs::rename(&properties, &new_path)?;
+        Ok(File::create(&new_path)?)
     } else {
         Err(Box::from("Failed to find application.yml"))
     }
@@ -70,7 +86,7 @@ fn ask_user_for_db()  -> &'static str {
 
 
 // find main.java to get the path
-fn find_file_by_name(root: &str, filename: &str) -> /*Vec<String>*/ Vec<PathBuf> {
+fn find_file_by_name(root: &str,  filename: &str) -> /*Vec<String>*/ Vec<PathBuf> {
     if filename.is_empty() {
         panic!("File name is empty");
     } else {
@@ -83,6 +99,13 @@ fn find_file_by_name(root: &str, filename: &str) -> /*Vec<String>*/ Vec<PathBuf>
             .collect()
     }
 }
+/*
+if filename.ends_with(".properties") {
+        filename = filename.trim_end_matches(".properties");
+    } else {
+        filename = filename.trim_end_matches(".yml");
+    }
+ */
 
 // create folders
 fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
