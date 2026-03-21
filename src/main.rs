@@ -3,7 +3,7 @@ use std::fs;
 use std::fs::{File};
 use std::io::{Write};
 use std::path::{Path, PathBuf};
-use walkdir::{DirEntry, WalkDir};
+use walkdir::{WalkDir};
 use dialoguer::Select;
 fn main() {
     //TODO instead of find_file_by_name use Path/PathBuff
