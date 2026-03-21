@@ -50,21 +50,27 @@ fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
     let chosen_db = ask_user_for_db();
 
     let yml = generate_yml(chosen_db);
-    file.write_all(yml?.as_bytes())?;
+    file.write_all(yml.as_bytes())?;
     Ok(())
 }
 
-fn generate_yml(chosen_db: &str) -> Result<String, Box<dyn Error>> {
+fn generate_yml(chosen_db: DbChoice) -> String {
+    let (url, driver) = match chosen_db {
+        DbChoice::Postgres =>
+            ("jdbc:postgresql://localhost:5432/${DB_NAME}".to_string(),
+            "org.postgresql.Driver".to_string()),
+        DbChoice::Mysql =>
+            ("jdbc:mysql://localhost:3306/${DB_NAME}".to_string(),
+             "com.mysql.cj.jdbc.Driver".to_string()),
+    };
 
-    if chosen_db == "PG" {
-        let url = "jdbc:postgresql://localhost:5432/${DB_NAME}".to_string();
-        Ok(format!(
+    let yml_content = format!(
 "spring:
   datasource:
     url: {url}
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
+    username: ${{DB_USERNAME}}
+    password: ${{DB_PASSWORD}}
+    driver-class-name: {driver}
 
   jpa:
     hibernate:
@@ -73,35 +79,20 @@ fn generate_yml(chosen_db: &str) -> Result<String, Box<dyn Error>> {
     properties:
       hibernate:
         format_sql: true
-"
-        ))
-    } else if chosen_db == "MSQL" {
-        let url = "jdbc:mysql://localhost:3306/${DB_NAME}".to_string();
-        Ok(format!(
-"spring:
-  datasource:
-    url: {url}
-    username: root
-    password: password
-    driver-class-name: com.mysql.cj.jdbc.Driver
+");
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-"
-        ))
-    } else {
-        Err(Box::from("Unsupported database type"))
-    }
+    yml_content
 }
 
-// TODO add enums instead of vec mf
-fn ask_user_for_db()  -> &'static str {
+
+enum DbChoice {
+    Postgres,
+    Mysql,
+}
+
+fn ask_user_for_db()  -> DbChoice {
     let items = vec!["[1] - PostgreSQL (Default)", "[2] - MySQL"];
+
 
     let selection = Select::new()
         .with_prompt("Choose a Database")
@@ -109,11 +100,11 @@ fn ask_user_for_db()  -> &'static str {
         .default(0)
         .interact()
         .unwrap();
-    let choice = &selection;
-    if *choice == 0 {
-        "PG"
-    } else {
-        "MSQL"
+
+    match selection {
+        0 => DbChoice::Postgres,
+        1 => DbChoice::Mysql,
+        _ => unreachable!()
     }
 }
 
