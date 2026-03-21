@@ -14,8 +14,6 @@ fn main() {
             create_folders(path_without_suffix).expect("Failed to create folders");
 
             write_into_yml_file();
-
-
         }
     }
 }
@@ -47,21 +45,58 @@ fn rename_file_if_properties(properties: PathBuf) -> Result<File, Box<dyn Error>
     }
 }
 
-fn write_into_yml_file() {
-    let mut file = get_yml_file().unwrap();
+fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
+    let mut file = get_yml_file()?;
     let chosen_db = ask_user_for_db();
 
-    let url: String;
-    if chosen_db == "PG" {
-        url = "jdbc:postgresql://localhost:5432/${DB_NAME}".to_string();
-    } else {
-        url = "jdbc:mysql://localhost:3306/${DB_NAME}".to_string();
-    }
+    let yml = generate_yml(chosen_db);
+    file.write_all(yml?.as_bytes())?;
+    Ok(())
+}
 
-    let yml_content = format!("spring:\n\
-                                \tdatasource:\n\
-                                    \t\turl: {url}");
-    file.write_all(yml_content.as_ref()).expect("gaga")
+fn generate_yml(chosen_db: &str) -> Result<String, Box<dyn Error>> {
+
+    if chosen_db == "PG" {
+        let url = "jdbc:postgresql://localhost:5432/${DB_NAME}".to_string();
+        Ok(format!(
+            "spring:
+              datasource:
+                url: {url}
+                username: postgres
+                password: password
+                driver-class-name: org.postgresql.Driver
+
+              jpa:
+                hibernate:
+                  ddl-auto: update
+                show-sql: true
+                properties:
+                  hibernate:
+                    format_sql: true
+            "
+        ))
+    } else if chosen_db == "MSQL" {
+        let url = "jdbc:mysql://localhost:3306/${DB_NAME}".to_string();
+        Ok(format!(
+            "spring:
+              datasource:
+                url: {url}
+                username: root
+                password: password
+                driver-class-name: com.mysql.cj.jdbc.Driver
+
+              jpa:
+                hibernate:
+                  ddl-auto: update
+                show-sql: true
+                properties:
+                  hibernate:
+                    format_sql: true
+            "
+        ))
+    } else {
+        Err(Box::from("Unsupported database type"))
+    }
 }
 
 // TODO add enums instead of vec mf
