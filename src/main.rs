@@ -10,7 +10,6 @@ fn main() {
     let paths = find_file_by_name("./", "Application.java");
     if !paths.is_empty() {
         for path in paths {
-            //let path_without_suffix = path.strip_suffix("main.java").unwrap();
             let path_without_suffix = path.parent().unwrap();
             create_folders(path_without_suffix).expect("Failed to create folders");
 
@@ -86,7 +85,7 @@ fn ask_user_for_db()  -> &'static str {
 
 
 // find main.java to get the path
-fn find_file_by_name(root: &str,  filename: &str) -> /*Vec<String>*/ Vec<PathBuf> {
+fn find_file_by_name(root: &str,  filename: &str) -> Vec<PathBuf> {
     if filename.is_empty() {
         panic!("File name is empty");
     } else {
@@ -94,18 +93,10 @@ fn find_file_by_name(root: &str,  filename: &str) -> /*Vec<String>*/ Vec<PathBuf
             .into_iter()
             .filter_map(|entry| entry.ok())
             .filter(|entry| entry.file_name().to_string_lossy().ends_with(filename))
-            //.map(|entry| entry.path().to_string_lossy().into_owned())
             .map(|entry| entry.path().to_owned())
             .collect()
     }
 }
-/*
-if filename.ends_with(".properties") {
-        filename = filename.trim_end_matches(".properties");
-    } else {
-        filename = filename.trim_end_matches(".yml");
-    }
- */
 
 // create folders
 fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
