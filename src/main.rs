@@ -19,7 +19,6 @@ fn main() {
     }
 }
 
-
 fn get_yml_file() -> Result<File, Box<dyn Error>> {
     //TODO instead of find_file_by_name use Path/PathBuff
     let yml_file = find_file_by_name("./", "application.yml");
@@ -36,6 +35,7 @@ fn get_yml_file() -> Result<File, Box<dyn Error>> {
         }
     }
 }
+
 fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
     let mut file = get_yml_file()?;
     let chosen_db = ask_user_for_db();
@@ -85,7 +85,6 @@ fn generate_yml(chosen_db: DbChoice) -> String {
     yml_content
 }
 
-
 enum DbChoice {
     Postgres,
     Mysql,
@@ -109,9 +108,6 @@ fn ask_user_for_db()  -> DbChoice {
     }
 }
 
-
-
-// find main.java to get the path
 fn find_file_by_name(root: &str,  filename: &str) -> Vec<PathBuf> {
     if filename.is_empty() {
         panic!("File name is empty");
@@ -125,7 +121,6 @@ fn find_file_by_name(root: &str,  filename: &str) -> Vec<PathBuf> {
     }
 }
 
-// create folders
 fn create_folders(root: &Path) -> Result<&str, Box<dyn Error>> {
     let folders_to_create = vec![
         "config", "controller", "repository", "entity",
