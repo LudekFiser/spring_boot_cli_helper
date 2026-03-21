@@ -14,23 +14,28 @@ pub(crate) fn setup() -> Result<(), Box<dyn Error>> {
         .with_prompt("Choose all you wanna do")
         .items(&items)
         .interact()?;
-    for selected in selection {
-        match selected {
-            0 => choices.push(Choices::CreateFolders),
-            1 => choices.push(Choices::SetupYmlFile),
-            2 => choices.push(Choices::CreateEnvFile),
-            _ => unreachable!(),
+    if !selection.is_empty() {
+        for selected in selection {
+            match selected {
+                0 => choices.push(Choices::CreateFolders),
+                1 => choices.push(Choices::SetupYmlFile),
+                2 => choices.push(Choices::CreateEnvFile),
+                _ => unreachable!(),
+            }
         }
-    }
-    for choice in choices {
-        match choice {
-            Choices::CreateFolders => file_utils::create_folders(&get_main_path_without_suffix()?)?,
-            Choices::SetupYmlFile => yml::write_into_yml_file()?,
-            Choices::CreateEnvFile => env::write_into_env_file()?,
+        for choice in choices {
+            match choice {
+                Choices::CreateFolders => file_utils::create_folders(&get_main_path_without_suffix()?)?,
+                Choices::SetupYmlFile => yml::write_into_yml_file()?,
+                Choices::CreateEnvFile => env::write_into_env_file()?,
+            }
         }
-    }
 
-    Ok(())
+        Ok(())
+    } else {
+        println!("BYE BYE");
+        Ok(())
+    }
 }
 
 enum Choices {
