@@ -2,7 +2,6 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
-use std::ops::Deref;
 use std::path::PathBuf;
 use crate::file_utils;
 use crate::ask_user;

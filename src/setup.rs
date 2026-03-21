@@ -1,6 +1,5 @@
 use std::error::Error;
-use std::path::{Path, PathBuf};
-use std::process::exit;
+use std::path::{PathBuf};
 use dialoguer::MultiSelect;
 use crate::{env, file_utils, yml};
 
