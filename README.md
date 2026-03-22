@@ -21,6 +21,7 @@ This helper is useful when you want to speed up the initial backend structure cr
 ## Features
 
 ### Package structure creation
+#### Main packages
 The tool creates these folders inside your main Java package:
 - `config`
 - `controller`
@@ -30,6 +31,10 @@ The tool creates these folders inside your main Java package:
 - `service`
 - `service/impl`
 - `exception`
+
+#### Packages for Flyway migration files
+- `db`
+- `db/migration`
 
 ### Config handling
 The tool checks configuration files in `src/main/resources`:
