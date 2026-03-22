@@ -128,3 +128,9 @@ You can:
 - select one option
 - select multiple options
 - or select nothing (the program will exit)
+
+---
+
+If you choose to Setup the .yml file, you will be then asked to choose between MySQL or PostgreSQL so that it can insert the correct database url and driver.
+
+![CLI preview](./readme_images/img_1.png)
