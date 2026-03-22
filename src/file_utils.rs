@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
+
 // TODO add another function validating the filename, so that we find the right one for each case, idk
 pub(crate) fn find_file_by_name(root: &str, filename: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     if filename.is_empty() {

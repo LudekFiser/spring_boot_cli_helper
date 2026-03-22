@@ -5,7 +5,8 @@ use std::io::Write;
 use std::path::PathBuf;
 use crate::file_utils;
 use crate::ask_user;
-use crate::ask_user::DbChoice;
+use crate::ask_user::{DbChoice, FlywayScripts};
+use crate::path_utils::get_resources_path;
 
 fn get_yml_file() -> Result<File, Box<dyn Error>> {
     //TODO instead of find_file_by_name use Path/PathBuff maybe, but works for now
@@ -24,6 +25,23 @@ fn get_yml_file() -> Result<File, Box<dyn Error>> {
         }
     }
 }
+
+pub(crate) fn create_flyway_migration_scripts() -> Result<(), Box<dyn Error>> {
+
+    let yes_no = ask_user::ask_user_create_flyway_scripts()?;
+    match yes_no {
+        FlywayScripts::Yes => {
+            let path = get_resources_path()?;
+            let files = &["V1__first.sql","V2__second.sql","V3__third.sql","V4__fourth.sql"];
+            for file in files {
+            File::create(path.join(file))?;
+        }},
+        FlywayScripts::No => (),
+    };
+    Ok(())
+}
+
+
 
 pub(crate) fn write_into_yml_file() -> Result<(), Box<dyn Error>> {
     let mut file = get_yml_file()?;
