@@ -37,6 +37,10 @@ The tool creates these folders inside your resources package:
 - `db`
 - `db/migration`
 
+**Empty Flyway migration files**
+
+The tool if chosen creates 4 Flyway .sql script files. (Empty for now)
+
 ### Config handling
 The tool checks configuration files in `src/main/resources`:
 - if `application.yml` already exists, it uses it
@@ -140,3 +144,10 @@ You can:
 If you choose to Setup the .yml file, you will be then asked to choose between MySQL or PostgreSQL so that it can insert the correct database url and driver.
 
 ![CLI preview](./readme_images/img_1.png)
+
+
+---
+
+If you choose to create Flyway migration folders, you will be then asked to choose whether you also want the tool to create 4 empty .sql script files inside the migration folders.
+
+![CLI preview](./readme_images/img_2.png)
