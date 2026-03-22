@@ -33,6 +33,7 @@ The tool creates these folders inside your main Java package:
 - `exception`
 
 #### Packages for Flyway migration files
+The tool creates these folders inside your resources package:
 - `db`
 - `db/migration`
 
